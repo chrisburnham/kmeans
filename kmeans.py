@@ -39,11 +39,35 @@ def assign_points(data, centroids):
 
 	return sorted_data
 
-# 
-def run_cluster(data, centroids):
-	runs += 1
-	if(runs > max_runs):
-		print "Too many runs"
+# Calculate a new centroid based off of the collected points
+def calculate_centroid(data_points):
+	matrix_sum = numpy.sum(data_points)
+	matrix_sum = matrix_sum / len(data_points)
+	return matrix_sum
 
+# 
+def run_cluster(data, centroids, runs):
 	sorted_data = assign_points(data, centroids)
-	#calc new centroids
+	new_centroids = len()
+	same_centroids = True
+	for cluster in sorted_data:
+		new_cen = calculate_centroid(cluster)
+		new_centroids.append(new_cen)
+		found = False
+		for old_cen in centroids:
+			if(new_cen == old_cen):
+				found = True
+				break
+
+		if(found):
+			same_centroids = False
+
+	if(same_centroids or (runs > max_runs)):
+		# TODO: Print out clusters
+	else:
+		runs += 1
+		run_cluster(data, new_centroids, runs)
+
+
+
+

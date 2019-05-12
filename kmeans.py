@@ -6,6 +6,8 @@ import numpy
 # Repeate until no points change or a max iteration is reached
 
 # Object to store a centroid and the data assosiated with it
+# Probably going to skip this. Just keep a list of centroids
+# and then check if any moved
 class Sorted_data:
 	centroid = numpy.matrix([[]])
 	data = numpy.matrix([[]])
@@ -19,25 +21,29 @@ def calculate_distance(centroid, data_point):
 
 # Assign all of the data points to their closest centroid
 # Returns a list of the centroids regrouped
-def assign_points(data_sorted_centroids):
-	centroids = list()
-	for data_obj in data_sorted_centroids:
-		centroids.append(data_obj)
+def assign_points(data, centroids):
+	sorted_data = list()
+	for unused in centroids:
+		sorted_data.append(list())
 
-	for data_obj in data_sorted_centroids:
-		for i in range(data_obj.data.size[1])
-			lowest_distance = 99999
-			for cen in centroids:
-				distance = calculate_distance(cen, data_obj.data[i, :])
-				lowest_distance = min(distance, lowest_distance)
+	for point in data:
+		min_dist = 99999
+		pt_idx = -1
+		for i in len(centroids):
+			dist = calculate_distance(centroids[i], point)
+			if(dist < min_dist):
+				min_dist = dist
+				pt_idx = i
 
-		# TODO: we need to do this in a different way. The goal is to assign to
-		# a closest centroid and check if any have changed
+		sorted_data[pt_idx].append(point)
 
-def run_cluster():
+	return sorted_data
+
+# 
+def run_cluster(data, centroids):
 	runs += 1
 	if(runs > max_runs):
 		print "Too many runs"
 
-	#assingn_points
+	sorted_data = assign_points(data, centroids)
 	#calc new centroids

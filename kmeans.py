@@ -164,20 +164,11 @@ if __name__ == "__main__":
 											metavar="Column_name",
 											help="Columns to skip. Specify multiple times")
 
-	parser.add_argument("--results",
-											metavar="Column_name",
-											help="Column with the the results")
-
-	parser.add_argument("--max_columns",
+	parser.add_argument("-k"
+											"--clusters",
 											type=int,
 											metavar="num",
-											help="Max number of columns to look at")
-
-	parser.add_argument("-l",
-											"--lambda",
-											type=float,
-											metavar="num",
-											help="Lambda value to choose the best regression")
+											help="Number of clusters to form")
 
 	parser.add_argument("--print_headers",
 											action="store_true",

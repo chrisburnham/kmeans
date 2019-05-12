@@ -9,6 +9,48 @@ import argparse
 
 ###########################################################
 
+# Takes in a numpy matrix and normilizes it by column
+def normalize_data(matrix):
+	for i in range(matrix.shape[1]):
+		mean = numpy.mean(matrix[:,i])
+		std_dev = numpy.std(matrix[:,i])
+		if(std_dev == 0):
+			matrix[:,i] = 0
+		else:
+			matrix[:,i] = (matrix[:,i] - mean) / std_dev
+
+###########################################################
+
+# Pass in first row to return a list of the header
+# indexs that we care about. If cols is not set 
+# return all of them in a tuple with the index
+# of the column containing the results
+def get_cols_from_headers(row):
+	cols = list()
+	result_col = -1
+	arg_cols = args.get("cols")
+	results_name = args.get("results")
+
+	for i in range(len(row)):
+		if(results_name == row[i]):
+			result_col = i
+			continue
+
+
+		not_found = True
+		if(type(arg_cols) == type(list())):
+			for name in arg_cols:
+				if(name == row[i]):
+					not_found = False
+					break
+
+		if(not_found):
+			cols.append(i)
+
+	return cols, result_col
+
+###########################################################
+
 # Object to store a centroid and the data assosiated with it
 # Probably going to skip this. Just keep a list of centroids
 # and then check if any moved

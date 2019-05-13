@@ -186,10 +186,8 @@ def read_csv(filename):
 
 ###########################################################
 
-# TODO: fix this for this assignment
-
 if __name__ == "__main__":
-	parser = argparse.ArgumentParser(description="Run Linear Regression")
+	parser = argparse.ArgumentParser(description="Run K-Means Clustering")
 
 	parser.add_argument("--data_file",
 											metavar="data_file.csv",

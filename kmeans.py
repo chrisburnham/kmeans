@@ -1,3 +1,7 @@
+# Chris Burnham
+# VTC Machine Learning 2019
+
+
 import numpy
 import csv
 import argparse
@@ -122,10 +126,10 @@ def run_cluster(data, centroids, runs):
 
 	if(same_centroids or (runs > max_runs)):
 		print "Clustering done"
-		# TODO: Print out clusters
+		return sorted_data
 	else:
 		runs += 1
-		run_cluster(data, new_centroids, runs)
+		return run_cluster(data, new_centroids, runs)
 
 ###########################################################
 
@@ -215,6 +219,14 @@ if __name__ == "__main__":
 		#rand_num = rand.uniform(0, data.size[0])
 		initial_centroids.append(data[rand_num, :])
 
-	run_cluster(data, initial_centroids, 1)
+	sorted_data = run_cluster(data, initial_centroids, 1)
+
+	cluster_num = 1
+	for cluster in sorted_data:
+		print "\n\nCluster " + str(cluster_num)
+		cluster_num += 1
+		print headers
+		for i in range(10):
+			print cluster[i]
 
 

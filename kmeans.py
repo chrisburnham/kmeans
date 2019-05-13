@@ -23,20 +23,12 @@ def normalize_data(matrix):
 
 # Pass in first row to return a list of the header
 # indexs that we care about. If cols is not set 
-# return all of them in a tuple with the index
-# of the column containing the results
+# return all of them
 def get_cols_from_headers(row):
 	cols = list()
-	result_col = -1
 	arg_cols = args.get("cols")
-	results_name = args.get("results")
 
 	for i in range(len(row)):
-		if(results_name == row[i]):
-			result_col = i
-			continue
-
-
 		not_found = True
 		if(type(arg_cols) == type(list())):
 			for name in arg_cols:
@@ -47,7 +39,7 @@ def get_cols_from_headers(row):
 		if(not_found):
 			cols.append(i)
 
-	return cols, result_col
+	return cols
 
 ###########################################################
 
@@ -120,6 +112,7 @@ def run_cluster(data, centroids, runs):
 			same_centroids = False
 
 	if(same_centroids or (runs > max_runs)):
+		print "Clusters"
 		# TODO: Print out clusters
 	else:
 		runs += 1
@@ -128,10 +121,7 @@ def run_cluster(data, centroids, runs):
 ###########################################################
 
 # Takes in the filename of a CSV and returns its filtered
-# normilized data, as well as the results column matrix
-
-# TODO: fix this for this assignment
-
+# normilized data
 def read_csv(filename):
 	with open(filename, 'rb') as csvfile:
 		csv_reader = csv.reader(csvfile)
@@ -140,8 +130,6 @@ def read_csv(filename):
 
 		cols = list()
 		data = list()
-		result_col = -1
-		results = list()
 		headers = list()
 		for row in csv_reader:
 			if(first):
@@ -149,28 +137,18 @@ def read_csv(filename):
 					print row
 					exit()
 
-				cols, result_col = get_cols_from_headers(row)
-
-				if(result_col == -1):
-					print "Invalid Result Column"
-					exit()
+				cols = get_cols_from_headers(row)
 
 			data_row = list()
-			result_row = list()
-
 			for i in range(len(row)):
-
-				if(result_col == i):
-					result_row.append(row[i])
-				elif(cols.count(i) != 0):
+				if(cols.count(i) != 0):
 					data_row.append(row[i])
 
 			if(args.get("print_data")):
-				print data_row + result_row
+				print data_row
 
 			if(not first):
 				data.append(data_row)
-				results.append(result_row)
 			else:
 				headers = data_row
 
@@ -179,10 +157,7 @@ def read_csv(filename):
 		data_matrix = numpy.matrix(data, dtype='f')
 		normalize_data(data_matrix)
 
-		result_matrix = numpy.matrix(results, dtype='f')
-		normalize_data(result_matrix)
-
-		return data_matrix, result_matrix, headers
+		return data_matrix, headers
 
 ###########################################################
 
@@ -204,7 +179,7 @@ if __name__ == "__main__":
 											metavar="Column_name",
 											help="Columns to skip. Specify multiple times")
 
-	parser.add_argument("-k"
+	parser.add_argument("-k",
 											"--clusters",
 											type=int,
 											metavar="num",

@@ -1,6 +1,7 @@
 import numpy
 import csv
 import argparse
+import random
 
 # Randomly pick k centroids
 # Assign each data point to nearest centroid
@@ -96,6 +97,8 @@ def calculate_centroid(data_points):
 # this has run
 # Runs untils clusters don't move or max runs
 def run_cluster(data, centroids, runs):
+	print "Run number" + str(runs)
+
 	sorted_data = assign_points(data, centroids)
 	new_centroids = len()
 	same_centroids = True
@@ -111,8 +114,11 @@ def run_cluster(data, centroids, runs):
 		if(found):
 			same_centroids = False
 
+	# TODO: get max_runs from arg
+	max_runs = 5
+
 	if(same_centroids or (runs > max_runs)):
-		print "Clusters"
+		print "Clustering done"
 		# TODO: Print out clusters
 	else:
 		runs += 1
@@ -169,10 +175,6 @@ if __name__ == "__main__":
 											help="Path to data file to read",
 											required=True)
 
-	parser.add_argument("--validation_file",
-											metavar="validation_file.csv",
-											help="Path to file to validate with")
-
 	parser.add_argument("-c",
 											"--cols",
 											action="append",
@@ -183,7 +185,8 @@ if __name__ == "__main__":
 											"--clusters",
 											type=int,
 											metavar="num",
-											help="Number of clusters to form")
+											help="Number of clusters to form",
+											required=True)
 
 	parser.add_argument("--print_headers",
 											action="store_true",
@@ -196,6 +199,16 @@ if __name__ == "__main__":
 
 	args = vars(parser.parse_args())
 
-	run_regression()
+	data, headers = read_csv(args.get("data_file"))
+	num_clusters = args.get("cols")
+
+	rand = random.Random()
+	rand.seed()
+	initial_centroids = list()
+	for i in range(num_clusters):
+		rand_num = rand.uniform(0, data.size[0])
+		initial_centroids.append(data[rand_num, :])
+
+	run_cluster(data, initial_centroids, 1)
 
 

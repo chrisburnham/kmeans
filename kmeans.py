@@ -97,6 +97,31 @@ def calculate_centroid(data_points):
 
 ###########################################################
 
+# Takes in a cluster and its centroid and returns the mean
+# distance to the centroid
+def mean_distance_to_centroid(cluster, centroid):
+	total = 0
+	for point in cluster:
+		total += calculate_distance(centroid, point)
+
+	return total / len(cluster)
+
+###########################################################
+
+# Takes in a cluster of data and the headers 
+# and prints out info about the cluster
+def print_cluster_info(cluster, headers):
+	centroid = calculate_centroid(cluster)
+	print "Mean distance: " + str(mean_distance_to_centroid(cluster, centroid))
+	print "Centroid:"
+	print centroid
+
+	points_to_print = 10
+	for i in range(points_to_print):
+		print cluster[i]
+
+###########################################################
+
 # Recursive function to do k means klustering
 # Takes in data, clusters, and how many times
 # this has run
@@ -225,8 +250,8 @@ if __name__ == "__main__":
 	for cluster in sorted_data:
 		print "\n\nCluster " + str(cluster_num)
 		cluster_num += 1
-		print headers
-		for i in range(10):
-			print cluster[i]
+		
+		print_cluster_info(cluster, headers)
+
 
 

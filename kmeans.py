@@ -110,15 +110,21 @@ def mean_distance_to_centroid(cluster, centroid):
 
 # Takes in a cluster of data and the headers 
 # and prints out info about the cluster
+# returns the mean for convience
 def print_cluster_info(cluster, headers):
 	centroid = calculate_centroid(cluster)
-	print "Mean distance: " + str(mean_distance_to_centroid(cluster, centroid))
+	mean_distance = mean_distance_to_centroid(cluster, centroid)
+	print "Mean distance: " + str(mean_distance)
+	print headers
 	print "Centroid:"
 	print centroid
+	print "Points:"
 
 	points_to_print = 10
 	for i in range(points_to_print):
 		print cluster[i]
+
+	return mean_distance
 
 ###########################################################
 
@@ -247,11 +253,15 @@ if __name__ == "__main__":
 	sorted_data = run_cluster(data, initial_centroids, 1)
 
 	cluster_num = 1
+	distance = 0
 	for cluster in sorted_data:
 		print "\n\nCluster " + str(cluster_num)
 		cluster_num += 1
 		
-		print_cluster_info(cluster, headers)
+		distance += print_cluster_info(cluster, headers)
+
+	cluster_num -= 1
+	print "\nOverall Mean Distance: " + str(distance / cluster_num)
 
 
 

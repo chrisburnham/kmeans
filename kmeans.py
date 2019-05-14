@@ -153,10 +153,15 @@ def run_cluster(data, centroids, runs):
 		same_centroids = same_centroids and found
 
 	# TODO: get max_runs from arg
-	max_runs = 50
+	max_runs = args.get("max_runs")
 
 	if(same_centroids or (runs > max_runs)):
 		print "Clustering done"
+		if(same_centroids):
+			print "Centroids the same"
+		else:
+			print "Max runs reached"
+
 		return sorted_data
 	else:
 		runs += 1
@@ -225,6 +230,12 @@ if __name__ == "__main__":
 											metavar="num",
 											help="Number of clusters to form",
 											required=True)
+
+	parser.add_argument("--max_runs",
+											type=int,
+											default=50,
+											metavar="50",
+											help="Max number of runs")
 
 	parser.add_argument("--print_headers",
 											action="store_true",

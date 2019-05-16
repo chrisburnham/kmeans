@@ -15,7 +15,9 @@ import random
 ###########################################################
 
 # Takes in a numpy matrix and normilizes it by column
+# returns a list of the means and std_devs
 def normalize_data(matrix):
+	norm_data = list()
 	for i in range(matrix.shape[1]):
 		mean = numpy.mean(matrix[:,i])
 		std_dev = numpy.std(matrix[:,i])
@@ -23,6 +25,11 @@ def normalize_data(matrix):
 			matrix[:,i] = 0
 		else:
 			matrix[:,i] = (matrix[:,i] - mean) / std_dev
+
+		norm_data.append((mean, std_dev))
+
+	return norm_data
+
 
 ###########################################################
 
@@ -108,21 +115,39 @@ def mean_distance_to_centroid(cluster, centroid):
 
 ###########################################################
 
+# Takes in a point and how we normilized and reverses it
+# returning the transformed point
+def reverse_normilization(point, norm_data):
+	for i in range(point.shape[1]):
+		mean, std_dev = norm_data[i]
+
+		if(std_dev == 0):
+			print "Bad std dev cannot reverse"
+			point[:,i] = 0
+		else:
+			point[:,i] = (point[:,i] * std_dev) + mean
+
+	return point
+
+###########################################################
+
 # Takes in a cluster of data and the headers 
 # and prints out info about the cluster
 # returns the mean for convience
-def print_cluster_info(cluster, headers):
+def print_cluster_info(cluster, headers, norm_data):
 	centroid = calculate_centroid(cluster)
 	mean_distance = mean_distance_to_centroid(cluster, centroid)
+	numpy.set_printoptions(suppress=True, 
+						formatter={'float_kind':'{:0.2f}'.format})
 	print "Mean distance: " + str(mean_distance)
 	print headers
 	print "Centroid:"
-	print centroid
+	print reverse_normilization(centroid, norm_data)
 	print "Points:"
 
 	points_to_print = 10
 	for i in range(points_to_print):
-		print cluster[i]
+		print reverse_normilization(cluster[i], norm_data)
 
 	return mean_distance
 
@@ -170,7 +195,8 @@ def run_cluster(data, centroids, runs):
 ###########################################################
 
 # Takes in the filename of a CSV and returns its filtered
-# normilized data
+# normilized data as well as how it was normilized and the
+# headers
 def read_csv(filename):
 	with open(filename, 'rb') as csvfile:
 		csv_reader = csv.reader(csvfile)
@@ -204,9 +230,9 @@ def read_csv(filename):
 			first = False
 
 		data_matrix = numpy.matrix(data, dtype='f')
-		normalize_data(data_matrix)
+		norm_data = normalize_data(data_matrix)
 
-		return data_matrix, headers
+		return data_matrix, headers, norm_data
 
 ###########################################################
 
@@ -248,7 +274,7 @@ if __name__ == "__main__":
 
 	args = vars(parser.parse_args())
 
-	data, headers = read_csv(args.get("data_file"))
+	data, headers, norm_data = read_csv(args.get("data_file"))
 	num_clusters = args.get("clusters")
 
 	print data
@@ -269,7 +295,7 @@ if __name__ == "__main__":
 		print "\n\nCluster " + str(cluster_num)
 		cluster_num += 1
 		
-		distance += print_cluster_info(cluster, headers)
+		distance += print_cluster_info(cluster, headers, norm_data)
 
 	cluster_num -= 1
 	print "\nOverall Mean Distance: " + str(distance / cluster_num)

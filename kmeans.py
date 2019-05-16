@@ -145,7 +145,7 @@ def print_cluster_info(cluster, headers, norm_data):
 	print reverse_normilization(centroid, norm_data)
 	print "Points:"
 
-	points_to_print = 10
+	points_to_print = args.get("num_print_pts")
 	for i in range(points_to_print):
 		print reverse_normilization(cluster[i], norm_data)
 
@@ -263,6 +263,12 @@ if __name__ == "__main__":
 											metavar="50",
 											help="Max number of runs")
 
+	parser.add_argument("--num_print_pts",
+											type=int,
+											default=10,
+											metavar="10",
+											help="Number of points per centroid to print")
+
 	parser.add_argument("--print_headers",
 											action="store_true",
 											help="Print headers and quit")
@@ -283,8 +289,8 @@ if __name__ == "__main__":
 	rand.seed()
 	initial_centroids = list()
 	for i in range(num_clusters):
-		rand_num = rand.uniform(0, 100)
-		#rand_num = rand.uniform(0, data.size[0])
+		#rand_num = rand.uniform(0, 100)
+		rand_num = rand.uniform(0, data.shape[0])
 		initial_centroids.append(data[rand_num, :])
 
 	sorted_data = run_cluster(data, initial_centroids, 1)
